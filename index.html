@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>艺术实验：多维觉醒与物理增强</title>
+    <title>艺术实验：拙简容器与优雅飞翔 V3</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&family=Inter:wght@400;700;900&display=swap');
-
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f2ef;
-            transition: background-color 0.4s;
+            font-family: 'Libre Baskerville', serif;
+            transition: background-color 0.5s ease;
         }
 
         #canvas-container {
@@ -22,56 +20,31 @@
             height: 100vh;
         }
 
-        .controls {
+        .panel {
             position: absolute;
-            top: 25px;
-            right: 25px;
-            width: 220px;
-            background: rgba(255, 255, 255, 0.75);
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
-            border-radius: 24px;
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
             z-index: 100;
-            border: 1px solid rgba(255,255,255,0.4);
+            border: 1px solid rgba(0,0,0,0.05);
+            width: 240px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        .control-item { 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 18px; 
+        .control-group {
+            margin-bottom: 16px;
         }
-        
-        .control-item:last-child { margin-bottom: 0; }
 
-        .control-item label { 
-            font-size: 11px; 
-            color: #888; 
-            text-transform: uppercase; 
+        .control-group label {
+            display: block;
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        .color-picker-container {
-            width: 32px;
-            height: 32px;
-            overflow: hidden;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: relative;
-        }
-
-        input[type="color"] {
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            width: 60px;
-            height: 60px;
-            border: none;
-            background: none;
-            cursor: pointer;
-            padding: 0;
+            margin-bottom: 6px;
         }
 
         .actions {
@@ -88,19 +61,36 @@
             background: none;
             border: none;
             font-family: 'Noto Serif SC', serif;
-            font-size: 16px;
+            font-size: 14px;
             color: #666;
             cursor: pointer;
             padding: 10px 20px;
             letter-spacing: 0.2em;
-            transition: all 0.3s;
-            position: relative;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
         }
 
         .btn:hover { color: #000; transform: translateY(-2px); }
-        .btn.active { color: #000; font-weight: bold; }
-        .btn.active::after {
-            content: ''; position: absolute; bottom: 0; left: 50%; width: 20px; height: 2px; background: #000; transform: translateX(-50%);
+        .btn.active { color: #000; font-weight: bold; border-bottom: 1px solid #000; }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: #333;
+        }
+
+        .color-picker-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        input[type="color"] {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: none;
         }
     </style>
 </head>
@@ -108,31 +98,40 @@
 
     <div id="canvas-container"></div>
 
-    <div class="controls">
-        <div class="control-item">
-            <label>画布</label>
-            <div class="color-picker-container">
-                <input type="color" id="bgCol" value="#f4f2ef">
+    <div class="panel">
+        <div class="control-group">
+            <div class="color-picker-row">
+                <label>背景颜色</label>
+                <input type="color" id="bgCol" value="#f7f5f2" onchange="updateColors()">
             </div>
         </div>
-        <div class="control-item">
-            <label>杯身</label>
-            <div class="color-picker-container">
-                <input type="color" id="cupCol" value="#333333">
+        <div class="control-group">
+            <div class="color-picker-row">
+                <label>杯子线条</label>
+                <input type="color" id="lineCol" value="#2a2a2a">
             </div>
         </div>
-        <div class="control-item">
-            <label>字母</label>
-            <div class="color-picker-container">
-                <input type="color" id="letterCol" value="#111111">
+        <div class="control-group">
+            <div class="color-picker-row">
+                <label>字符/飞鸟</label>
+                <input type="color" id="textCol" value="#1a1a1a">
             </div>
+        </div>
+        <hr class="my-4 border-gray-200">
+        <div class="control-group">
+            <label>飞鸟速度</label>
+            <input type="range" id="birdSpeed" min="1" max="10" value="5" step="0.1">
+        </div>
+        <div class="control-group">
+            <label>自主引导强度</label>
+            <input type="range" id="birdAgility" min="0.05" max="0.5" value="0.2" step="0.01">
         </div>
     </div>
 
     <div class="actions">
-        <button class="btn" id="injectBtn" onclick="toggleInject()">注入</button>
-        <button class="btn" id="awakenBtn" onclick="awaken()">觉醒</button>
-        <button class="btn" onclick="resetAll()">复位</button>
+        <button class="btn" id="injectBtn" onclick="toggleInject()">填充注入</button>
+        <button class="btn" id="awakenBtn" onclick="awaken()">翻转觉醒</button>
+        <button class="btn" onclick="resetAll()">清空重置</button>
     </div>
 
     <script>
@@ -141,61 +140,24 @@
         let engine, render, runner, birds = [];
         let state = 'IDLE'; 
         let injectInterval = null;
-        let wanderTarget = { x: window.innerWidth/2, y: window.innerHeight/3 };
+        let wanderTarget = { x: window.innerWidth/2, y: window.innerHeight/4 };
         const W = window.innerWidth, H = window.innerHeight;
         
-        const N = 240; 
-        const SEG = 80; 
-        let cupLines = [[], [], []];
-        let birdTargetShape = [];
-        let curPos = { x: W/2, y: H*0.65 }, curAngle = 0;
-        let morphFactor = 0, morphStartTime = 0;
+        let curPos = { x: W/2, y: H * 0.7 }, curAngle = 0;
         let physWalls = [];
 
-        // 手绘线数据 (IMG_1439)
+        // 拙简杯子的手绘坐标（重新调整，增加重叠确保不漏）
         const CW = 110, CH = 140;
-        const rawLines = [
-            [{x: -CW, y: -CH*1.2}, {x: -CW, y: CH + 20}], 
-            [{x: -CW - 30, y: CH}, {x: CW + 35, y: CH}],  
-            [{x: CW, y: CH + 20}, {x: CW + 20, y: -CH*1.15}] 
+        const naiveLines = [
+            // 左边一笔：从杯口延伸到底部以下一点，确保交接
+            [{x: -CW-5, y: -CH}, {x: -CW, y: CH+10}],
+            // 底部一笔：左右两端伸出一些，覆盖左右壁的连接点
+            [{x: -CW-15, y: CH}, {x: CW+15, y: CH+5}],
+            // 右边一笔：同左，向下延伸
+            [{x: CW+5, y: CH+10}, {x: CW-5, y: -CH-10}]
         ];
 
-        const BS = 180;
-        const rawBird = [
-            {x: -1.2, y: 0.1}, {x: -0.6, y: 0.6}, {x: 0, y: 0.8}, {x: 0.6, y: 0.8}, 
-            {x: 1.0, y: 0.5}, {x: 0.3, y: 0.2}, {x: 0.8, y: 0.3}, {x: 1.2, y: -0.1},
-            {x: 0.6, y: -0.5}, {x: 1.1, y: -0.9}, {x: 0.3, y: -0.7}, {x: -0.5, y: -0.5},
-            {x: -1.1, y: -0.2}, {x: -1.2, y: 0.1}
-        ].map(p => ({x: p.x * BS, y: p.y * BS}));
-
-        function resample(points, count) {
-            let total = 0, ds = [];
-            for(let i=1; i<points.length; i++) {
-                let d = Math.sqrt(Math.pow(points[i].x-points[i-1].x,2) + Math.pow(points[i].y-points[i-1].y,2));
-                ds.push(d); total += d;
-            }
-            let res = [{...points[0]}], step = total / (count - 1), acc = 0, p = 0;
-            for(let i=1; i<count-1; i++) {
-                let target = i * step;
-                while(p < ds.length && acc + ds[p] < target) { acc += ds[p]; p++; }
-                let r = (target - acc) / ds[p];
-                res.push({
-                    x: points[p].x + (points[p+1].x - points[p].x) * r,
-                    y: points[p].y + (points[p+1].y - points[p].y) * r
-                });
-            }
-            res.push({...points[points.length-1]});
-            return res;
-        }
-
         function setup() {
-            rawLines.forEach((line, idx) => {
-                let r = resample(line, SEG);
-                r.forEach(p => { p.x += (Math.random()-0.5)*3; p.y += (Math.random()-0.5)*3; });
-                cupLines[idx] = r;
-            });
-            birdTargetShape = resample(rawBird, N);
-
             engine = Engine.create();
             render = Render.create({
                 element: document.getElementById('canvas-container'),
@@ -203,221 +165,185 @@
                 options: { width: W, height: H, wireframes: false, background: 'transparent' }
             });
 
-            // 物理容器优化：增长壁高以防溢出
-            const t = 100;
-            const wallOpt = { isStatic: true, friction: 0.02, restitution: 0.4, render: { visible: false } };
-            physWalls = [
-                Bodies.rectangle(0, CH + t/2, CW*2.4, t, wallOpt), // 底
-                Bodies.rectangle(-CW - t/2 + 5, -CH*0.5, t, CH*3.5, wallOpt), // 左壁加长
-                Bodies.rectangle(CW + t/2 - 5, -CH*0.5, t, CH*3.5, wallOpt)    // 右壁加长
-            ];
+            // 物理边界厚度调大，增强碰撞检测
+            const t = 20; 
+            physWalls = naiveLines.map(line => {
+                const start = line[0], end = line[1];
+                const center = { x: (start.x + end.x)/2, y: (start.y + end.y)/2 };
+                const length = Math.sqrt(Math.pow(end.x-start.x,2) + Math.pow(end.y-start.y,2));
+                const angle = Math.atan2(end.y - start.y, end.x - start.x);
+                
+                return Bodies.rectangle(center.x, center.y, length, t, {
+                    isStatic: true,
+                    angle: angle,
+                    render: { visible: false },
+                    friction: 0.1,
+                    slop: 0.5 // 允许一点嵌入，减少穿透
+                });
+            });
             Composite.add(engine.world, physWalls);
 
             Events.on(engine, 'beforeUpdate', () => {
                 if (state === 'IDLE') {
-                    const time = engine.timing.timestamp * 0.0016;
-                    curPos.y = H * 0.65 + Math.sin(time)*5;
-                    curAngle = Math.sin(time * 0.7) * 0.015;
+                    const time = engine.timing.timestamp * 0.002;
+                    curPos.y = (H * 0.7) + Math.sin(time) * 3;
+                    curAngle = Math.sin(time * 0.6) * 0.01;
                 }
-                physWalls.forEach((b, i) => {
-                    const offsets = [{x:0, y:CH+10}, {x:-CW-10, y:-CH*0.5}, {x:CW+10, y:-CH*0.5}];
+
+                physWalls.forEach((wall, i) => {
+                    const start = naiveLines[i][0], end = naiveLines[i][1];
+                    const centerRel = { x: (start.x + end.x)/2, y: (start.y + end.y)/2 };
+                    const angleRel = Math.atan2(end.y - start.y, end.x - start.x);
+
                     const cos = Math.cos(curAngle), sin = Math.sin(curAngle);
-                    Body.setPosition(b, { 
-                        x: curPos.x + (offsets[i].x * cos - offsets[i].y * sin), 
-                        y: curPos.y + (offsets[i].x * sin + offsets[i].y * cos) 
-                    });
-                    Body.setAngle(b, curAngle);
+                    const rotatedX = centerRel.x * cos - centerRel.y * sin;
+                    const rotatedY = centerRel.x * sin + centerRel.y * cos;
+
+                    Body.setPosition(wall, { x: curPos.x + rotatedX, y: curPos.y + rotatedY });
+                    Body.setAngle(wall, curAngle + angleRel);
                 });
             });
 
             runner = Runner.create();
             Runner.run(runner, engine);
             
-            // 每隔几秒更新鸟群的漫游目标
             setInterval(() => {
-                wanderTarget = {
-                    x: 100 + Math.random() * (W - 200),
-                    y: 80 + Math.random() * (H/2)
-                };
-            }, 4000);
+                wanderTarget = { x: Math.random() * W, y: Math.random() * (H/3) };
+            }, 5000);
 
+            updateColors();
             loop();
         }
 
-        function resetAll() {
-            if (injectInterval) {
-                clearInterval(injectInterval);
-                injectInterval = null;
-                document.getElementById('injectBtn').classList.remove('active');
-            }
-            const allBodies = Composite.allBodies(engine.world);
-            allBodies.forEach(b => { if (!b.isStatic) Composite.remove(engine.world, b); });
-            state = 'IDLE';
-            birds = [];
-            morphFactor = 0;
-            curPos = { x: W/2, y: H*0.65 };
-            curAngle = 0;
-            Composite.clear(engine.world, false);
-            Composite.add(engine.world, physWalls);
-        }
-
-        function toggleInject() {
-            if (state !== 'IDLE') return;
-            const btn = document.getElementById('injectBtn');
-            if (injectInterval) { 
-                clearInterval(injectInterval); 
-                injectInterval = null; 
-                btn.classList.remove('active'); 
-            } else { 
-                injectInterval = setInterval(spawn, 70); 
-                btn.classList.add('active'); 
-            }
+        function updateColors() {
+            document.body.style.backgroundColor = document.getElementById('bgCol').value;
         }
 
         function spawn() {
-            const chars = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z * 9 5 0".split(" ");
-            const size = 12 + Math.random() * 20; // 尺寸随机化
-            const b = Bodies.rectangle(W/2 + (Math.random()-0.5)*80, -80, size*0.6, size*0.6, {
-                restitution: 0.45, // 增加反弹
-                friction: 0.05,
-                angle: Math.random() * Math.PI, // 随机初始角度
+            const chars = "AbCdEfGhIjKlMnOpQrStUvWxYz".split("");
+            const size = 18 + Math.random() * 22;
+            // 投放区域收窄，确保在杯子正上方
+            const xOffset = (Math.random() - 0.5) * (CW * 1.2);
+            const b = Bodies.rectangle(curPos.x + xOffset, -50, size * 0.7, size * 0.8, {
+                restitution: 0.1,
+                friction: 0.3,
+                angle: Math.random() * 0.4 - 0.2,
                 char: chars[Math.floor(Math.random()*chars.length)],
-                size: size, render: { visible: false },
-                isFree: false, 
-                dropThreshold: 100 + Math.random() * 300, // 觉醒时机随机
-                startDropY: 0
+                size: size,
+                render: { visible: false },
+                isFree: false
             });
             Composite.add(engine.world, b);
+        }
+
+        function toggleInject() {
+            const btn = document.getElementById('injectBtn');
+            if (injectInterval) { 
+                clearInterval(injectInterval); injectInterval = null; 
+                btn.classList.remove('active'); 
+            } else { 
+                injectInterval = setInterval(spawn, 150); 
+                btn.classList.add('active'); 
+            }
         }
 
         function awaken() {
             if (state !== 'IDLE') return;
             if (injectInterval) toggleInject();
             state = 'POURING';
-            const sY = curPos.y, sT = Date.now();
-            
-            const animate = () => {
+            const sT = Date.now();
+            const initialY = curPos.y;
+
+            const pourAnimate = () => {
                 if (state !== 'POURING') return;
-                const p = Math.min((Date.now() - sT) / 3800, 1);
-                curAngle = p * Math.PI * 1.15; 
-                curPos.y = sY - 260 * Math.sin(p * Math.PI);
+                const p = Math.min((Date.now() - sT) / 2500, 1);
                 
+                curAngle = p * Math.PI * 0.95; 
+                curPos.y = initialY - Math.sin(p * Math.PI) * 120;
+
                 Composite.allBodies(engine.world).forEach(b => {
                     if (!b.isStatic && !b.isBird) {
-                        // 判定离开杯口
-                        if (curAngle > Math.PI*0.75 && b.position.y > curPos.y - 60) {
+                        if (curAngle > Math.PI * 0.55 && b.position.y > curPos.y - 100) {
                             if (!b.isFree) {
                                 b.isFree = true;
-                                b.startDropY = b.position.y;
+                                b.releaseY = b.position.y;
                             }
                         }
-                        if (b.isFree) {
-                            if (b.position.y - b.startDropY > b.dropThreshold) {
-                                transformToBird(b);
-                            }
+                        // 顺畅过渡：掉落一定距离后开始化鸟
+                        if (b.isFree && b.position.y - b.releaseY > 120) {
+                            transformToBird(b);
                         }
                     }
                 });
 
-                if (p < 1) requestAnimationFrame(animate);
-                else {
-                    state = 'MORPHING';
-                    morphStartTime = Date.now();
-                    Composite.clear(engine.world, false); 
-                }
+                if (p < 1) requestAnimationFrame(pourAnimate);
+                else { state = 'REST'; }
             };
-            animate();
+            pourAnimate();
         }
 
         function transformToBird(b) {
             b.isBird = true;
+            const inheritedVelocity = Vector.clone(b.velocity);
+            const maxAgility = parseFloat(document.getElementById('birdAgility').value);
+            
             birds.push({
                 pos: Vector.create(b.position.x, b.position.y),
-                // 初始斜向推力
-                vel: Vector.create(b.position.x > W/2 ? 3 + Math.random()*2 : -3 - Math.random()*2, -3 - Math.random()*3), 
+                vel: Vector.mult(inheritedVelocity, 1.2), // 稍微增强初始冲量
                 acc: {x: 0, y: 0},
-                wing: Math.random() * 50,
+                wing: Math.random() * 10,
                 size: b.size,
-                maxSpeed: 4 + Math.random() * 4, // 每只鸟速度不同
-                birdType: Math.random() > 0.8 ? 'leader' : 'follower'
+                maxSpeed: parseFloat(document.getElementById('birdSpeed').value) * (0.8 + Math.random() * 0.4),
+                influence: 0.02, // 初始影响力极低，维持物理轨迹
+                maxInfluence: maxAgility
             });
             Composite.remove(engine.world, b);
         }
 
         function loop() {
             const ctx = render.context;
-            const bg = document.getElementById('bgCol').value;
-            const cupCol = document.getElementById('cupCol').value;
-            const letterCol = document.getElementById('letterCol').value;
+            const lineCol = document.getElementById('lineCol').value;
+            const textCol = document.getElementById('textCol').value;
+            const agility = parseFloat(document.getElementById('birdAgility').value);
+            const baseMaxSpeed = parseFloat(document.getElementById('birdSpeed').value);
 
-            document.body.style.backgroundColor = bg;
-            ctx.clearRect(0,0,W,H);
+            ctx.clearRect(0, 0, W, H);
 
-            if (state === 'MORPHING') {
-                let p = Math.min((Date.now() - morphStartTime) / 3000, 1);
-                morphFactor = p < 0.5 ? 2*p*p : -1+(4-2*p)*p;
-                curAngle = curAngle * (1-morphFactor) + 0.05 * morphFactor;
-                if (p >= 1) state = 'FLYING';
-            } else if (state === 'FLYING') {
-                curPos.x -= 3; curPos.y -= 1.5;
-            }
-
-            // --- 1. 绘制杯子/折叠大鸟 ---
+            // 1. 杯子
             ctx.save();
             ctx.translate(curPos.x, curPos.y);
             ctx.rotate(curAngle);
-            ctx.strokeStyle = cupCol;
-            ctx.lineWidth = 2.8;
+            ctx.strokeStyle = lineCol;
+            ctx.lineWidth = 3;
             ctx.lineCap = "round";
-
-            if (morphFactor < 0.05) {
-                cupLines.forEach(line => {
-                    ctx.beginPath();
-                    line.forEach((p, i) => i===0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-                    ctx.stroke();
-                });
-            } else {
+            naiveLines.forEach(line => {
                 ctx.beginPath();
-                for(let i=0; i<N; i++) {
-                    let sIdx = Math.min(Math.floor(i / SEG), 2);
-                    let subIdx = i % SEG;
-                    let cp = cupLines[sIdx][subIdx] || cupLines[2][SEG-1];
-                    let bp = birdTargetShape[i];
-                    let tx = cp.x * (1 - morphFactor) + bp.x * morphFactor;
-                    let ty = cp.y * (1 - morphFactor) + bp.y * morphFactor;
-                    if (morphFactor > 0.5) {
-                        let wingAmt = Math.abs(bp.x) / BS;
-                        ty += Math.sin(Date.now()*0.012 + i*0.05) * 30 * morphFactor * wingAmt;
-                    }
-                    i===0 ? ctx.moveTo(tx, ty) : ctx.lineTo(tx, ty);
-                }
-                if (morphFactor > 0.85) ctx.closePath();
+                ctx.moveTo(line[0].x, line[0].y);
+                ctx.lineTo(line[1].x, line[1].y);
                 ctx.stroke();
-            }
+            });
             ctx.restore();
 
-            // --- 2. 绘制下落字母 ---
+            // 2. 字母
             Composite.allBodies(engine.world).forEach(b => {
                 if(!b.isStatic && !b.isBird) {
                     ctx.save();
                     ctx.translate(b.position.x, b.position.y);
                     ctx.rotate(b.angle);
-                    ctx.fillStyle = letterCol;
-                    ctx.globalAlpha = 0.85;
-                    ctx.font = `italic 900 ${b.size}px "Inter"`;
-                    ctx.textAlign = "center"; 
+                    ctx.fillStyle = textCol;
+                    ctx.font = `${b.size}px 'Libre Baskerville', serif`;
+                    ctx.textAlign = "center";
                     ctx.fillText(b.char, 0, 0);
                     ctx.restore();
                 }
             });
 
-            // --- 3. 绘制多样化鸟群 ---
+            // 3. 飞鸟
             birds.forEach(b => {
                 let sep = {x:0, y:0}, ali = {x:0, y:0}, coh = {x:0, y:0}, count = 0;
-                
                 birds.forEach(o => {
                     let d = Vector.magnitude(Vector.sub(b.pos, o.pos));
-                    if(d > 0 && d < 80) {
+                    if(d > 0 && d < 60) {
                         sep = Vector.add(sep, Vector.div(Vector.normalise(Vector.sub(b.pos, o.pos)), d));
                         ali = Vector.add(ali, o.vel);
                         coh = Vector.add(coh, o.pos);
@@ -425,35 +351,37 @@
                     }
                 });
 
+                // 动量过渡逻辑：influence 慢慢爬升
+                b.influence = Math.min(b.influence + 0.002, agility);
+                b.maxSpeed = baseMaxSpeed; 
+                
                 if(count > 0) {
-                    b.acc = Vector.add(b.acc, Vector.mult(Vector.normalise(sep), 0.6));
-                    b.acc = Vector.add(b.acc, Vector.mult(Vector.normalise(ali), 0.2));
-                    b.acc = Vector.add(b.acc, Vector.mult(Vector.normalise(Vector.sub(Vector.div(coh, count), b.pos)), 0.1));
+                    b.acc = Vector.add(b.acc, Vector.mult(Vector.normalise(sep), 0.5));
+                    b.acc = Vector.add(b.acc, Vector.mult(Vector.normalise(ali), b.influence));
+                    b.acc = Vector.add(b.acc, Vector.mult(Vector.normalise(Vector.sub(Vector.div(coh, count), b.pos)), 0.05));
                 }
 
-                // 引导力：向动态目标移动
-                let seek = Vector.sub(wanderTarget, b.pos);
-                b.acc = Vector.add(b.acc, Vector.mult(Vector.normalise(seek), 0.12));
-
-                // 简单的边界规避
-                if(b.pos.x < 50) b.acc.x += 0.5; if(b.pos.x > W-50) b.acc.x -= 0.5;
-                if(b.pos.y < 50) b.acc.y += 0.5; if(b.pos.y > H-50) b.acc.y -= 0.5;
+                let steer = Vector.sub(wanderTarget, b.pos);
+                b.acc = Vector.add(b.acc, Vector.mult(Vector.normalise(steer), b.influence * 1.5));
 
                 b.vel = Vector.add(b.vel, b.acc);
-                if(Vector.magnitude(b.vel) > b.maxSpeed) b.vel = Vector.mult(Vector.normalise(b.vel), b.maxSpeed);
+                let speed = Vector.magnitude(b.vel);
+                if(speed > b.maxSpeed) b.vel = Vector.mult(Vector.normalise(b.vel), b.maxSpeed);
+                
                 b.pos = Vector.add(b.pos, b.vel);
                 b.acc = {x:0, y:0};
-                b.wing += (Vector.magnitude(b.vel) * 0.05 + 0.1);
+                b.wing += 0.15;
 
                 ctx.save();
                 ctx.translate(b.pos.x, b.pos.y);
                 ctx.rotate(Math.atan2(b.vel.y, b.vel.x));
-                ctx.strokeStyle = letterCol; 
-                ctx.lineWidth = b.size > 20 ? 2 : 1.2;
-                let s = b.size * 0.7, f = Math.sin(b.wing)*s*0.8;
-                ctx.beginPath(); 
-                ctx.moveTo(-s, f); 
-                ctx.quadraticCurveTo(0, -f*0.5, s, f); 
+                ctx.strokeStyle = textCol;
+                ctx.lineWidth = 1.5;
+                let s = b.size * 0.45;
+                let w = Math.sin(b.wing) * s * 0.7;
+                ctx.beginPath();
+                ctx.moveTo(-s, w);
+                ctx.quadraticCurveTo(0, -w*0.8, s, w);
                 ctx.stroke();
                 ctx.restore();
             });
@@ -461,8 +389,16 @@
             requestAnimationFrame(loop);
         }
 
+        function resetAll() {
+            if (injectInterval) { clearInterval(injectInterval); injectInterval = null; }
+            document.getElementById('injectBtn').classList.remove('active');
+            const characters = Composite.allBodies(engine.world).filter(b => !b.isStatic);
+            Composite.remove(engine.world, characters);
+            birds = []; state = 'IDLE'; curAngle = 0;
+            curPos = { x: W/2, y: H * 0.7 };
+        }
+
         window.onload = setup;
-        window.onresize = () => resetAll();
     </script>
 </body>
 </html>
